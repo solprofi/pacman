@@ -2,24 +2,24 @@ const TILE_SIZE = 25;
 
 let FIELD = [
   '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
-  '0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0',
+  '0,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,0',
+  '0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,3,0,0,0',
   '0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0',
-  '0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0',
-  '0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0',
+  '0,1,1,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0',
   '0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0',
   '0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0',
   '0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0',
   '0,0,0,0,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0',
-  '0,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,0',
-  '0,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,0',
+  '0,1,1,1,1,1,1,1,0,4,1,4,0,1,1,1,1,3,1,0',
+  '0,1,1,1,1,3,1,1,0,4,1,4,0,1,1,1,1,1,1,0',
   '0,0,0,0,0,0,1,1,0,1,0,0,0,1,1,0,0,0,0,0',
-  '0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0',
+  '0,1,1,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0',
   '0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0',
   '0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0',
   '0,1,1,1,1,1,1,1,1,1,5,1,1,1,1,1,1,1,1,0',
   '0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0',
   '0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0',
-  '0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0',
+  '0,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,3,1,0',
   '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
 ];
 
@@ -38,9 +38,29 @@ function setup() {
 function draw() {
   background(51);
 
-  for (i = 0; i < field.length; i++) {
-    field[i].draw();
+  for (let i = 0; i < field.length; i++) {
+
+    if (field[i].intact) {
+
+      if (field[i].type != 'GHOST' && field[i].type != 'PACMAN') {
+        field[i].draw();
+      }
+    }
   }
+
+  for (let i = 0; i < ghosts.length; i++) {
+    ghosts[i].update();
+    ghosts[i].draw();
+  }
+
+  pacman.update();
+  pacman.draw();
+
+  noStroke();
+  fill(255);
+  textSize(30);
+  textAlign(LEFT);
+  text(score, 5, height - 5);
 }
 
 function generateField() {
@@ -49,34 +69,34 @@ function generateField() {
 
   for (let i = 0; i < FIELD.length; i++) {
 
-    let row = FIELD[i].split(",");
+    let row = FIELD[i].split(',');
     for (let j = 0; j < row.length; j++) {
 
       const type = TYPES[row[j]];
       const tile = new Tile(j, i, type, -1);
 
       switch (type) {
-        case "BARRIER":
+        case 'BARRIER':
           field.push(tile);
           break;
 
-        case "CHERRY":
+        case 'CHERRY':
           endScore += 10;
           field.push(tile);
           break;
 
-        case "BISCUIT":
+        case 'BISCUIT':
           endScore++;
           field.push(tile);
           break;
 
-        case "PACMAN":
-          f.push(new Tile(j, i, "OPEN"));
+        case 'PACMAN':
+          f.push(new Tile(j, i, 'OPEN'));
           break;
 
-        case "GHOST":
+        case 'GHOST':
           ghosts.push(new Tile(j, i, type, gId % 2));
-          f.push(new Tile(j, i, "OPEN"));
+          f.push(new Tile(j, i, 'OPEN'));
           gId++;
           break;
       }
