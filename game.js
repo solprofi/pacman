@@ -17,7 +17,7 @@ function setup() {
 }
 
 function draw() {
-  background(51);
+  background(30);
 
   for (let i = 0; i < field.length; i++) {
     if (field[i].isIntact && field[i].type != 'GHOST' && field[i].type != 'PACMAN') {
