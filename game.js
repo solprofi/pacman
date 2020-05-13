@@ -61,6 +61,20 @@ function draw() {
   textSize(30);
   textAlign(LEFT);
   text(score, 5, height - 5);
+
+  handleUserInput();
+}
+
+function handleUserInput() {
+  if (keyIsDown(UP_ARROW)) {
+    pacman.move(0, -1, true);
+  } else if (keyIsDown(DOWN_ARROW)) {
+    pacman.move(0, 1, true);
+  } else if (keyIsDown(LEFT_ARROW)) {
+    pacman.move(-1, 0, true);
+  } else if (keyIsDown(RIGHT_ARROW)) {
+    pacman.move(1, 0, true);
+  }
 }
 
 function generateField() {

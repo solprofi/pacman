@@ -4,6 +4,8 @@ function Tile(x, y, type) {
   this.x = x;
   this.y = y;
   this.type = type;
+
+  this.moving = false;
 }
 
 Tile.prototype.draw = function () {
