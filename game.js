@@ -1,37 +1,14 @@
-const TILE_SIZE = 25;
+let field = [];
+const ghosts = [];
 
-let FIELD = [
-  '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
-  '0,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,0',
-  '0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,3,0,0,0',
-  '0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0',
-  '0,1,1,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0',
-  '0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0',
-  '0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0',
-  '0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0',
-  '0,0,0,0,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0',
-  '0,1,1,1,1,1,1,1,0,4,1,4,0,1,1,1,1,3,1,0',
-  '0,1,1,1,1,3,1,1,0,4,1,4,0,1,1,1,1,1,1,0',
-  '0,0,0,0,0,0,1,1,0,1,0,0,0,1,1,0,0,0,0,0',
-  '0,1,1,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0',
-  '0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0',
-  '0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0',
-  '0,1,1,1,1,1,1,1,1,1,5,1,1,1,1,1,1,1,1,0',
-  '0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0',
-  '0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0',
-  '0,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,3,1,0',
-  '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
-];
-
+let pacman;
+let score;
+let endScore;
 
 function setup() {
+  createCanvas(500, 535);
 
-  createCanvas(500, 500);
-
-  for (let i = 0; i < 400; i++) {
-    field.push(new Tile(i % 20, Math.floor(i / 20), random(TYPES)));
-  }
-
+  score = 0;
   field = generateField();
 }
 
@@ -39,12 +16,8 @@ function draw() {
   background(51);
 
   for (let i = 0; i < field.length; i++) {
-
-    if (field[i].intact) {
-
-      if (field[i].type != 'GHOST' && field[i].type != 'PACMAN') {
-        field[i].draw();
-      }
+    if (field[i].isIntact && field[i].type != 'GHOST' && field[i].type != 'PACMAN') {
+      field[i].draw();
     }
   }
 
@@ -62,30 +35,46 @@ function draw() {
   textAlign(LEFT);
   text(score, 5, height - 5);
 
-  handleUserInput();
+  handlePacman();
 }
 
-function handleUserInput() {
-  if (keyIsDown(UP_ARROW)) {
+function handlePacman() {
+  if (keyIsDown(UP_ARROW) || keyIsDown(87)) {
     pacman.move(0, -1, true);
-  } else if (keyIsDown(DOWN_ARROW)) {
+  } else if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) {
     pacman.move(0, 1, true);
-  } else if (keyIsDown(LEFT_ARROW)) {
+  } else if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
     pacman.move(-1, 0, true);
-  } else if (keyIsDown(RIGHT_ARROW)) {
+  } else if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
     pacman.move(1, 0, true);
   }
 }
 
-function generateField() {
-  const field = [];
-  let gId = 0;
+function endGame(won) {
+  textSize(60);
+  textAlign(CENTER);
+  fill(255);
+  stroke(0);
+  strokeWeight(5);
+  if (won) {
+    text('You win!', width / 2, height / 2);
+  } else {
+    text('You lose!', width / 2, height / 2);
+  }
+  textSize(30);
+  text('Refresh the page to restart', width / 2, height / 2 + 50);
 
+  noLoop();
+}
+
+function generateField() {
+  let field = [];
+
+  let gId = 0;
   for (let i = 0; i < FIELD.length; i++) {
 
-    let row = FIELD[i].split(',');
+    const row = FIELD[i].split(',');
     for (let j = 0; j < row.length; j++) {
-
       const type = TYPES[row[j]];
       const tile = new Tile(j, i, type, -1);
 
@@ -105,16 +94,16 @@ function generateField() {
           break;
 
         case 'PACMAN':
-          f.push(new Tile(j, i, 'OPEN'));
+          pacman = tile;
+          field.push(new Tile(j, i, 'OPEN'));
           break;
 
         case 'GHOST':
           ghosts.push(new Tile(j, i, type, gId % 2));
-          f.push(new Tile(j, i, 'OPEN'));
+          field.push(new Tile(j, i, 'OPEN'));
           gId++;
           break;
       }
-
     }
   }
 
