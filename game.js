@@ -5,11 +5,15 @@ let pacman;
 let score;
 let endScore;
 
-function setup() {
-  createCanvas(500, 535);
-
+function init() {
   score = 0;
   field = generateField();
+}
+
+function setup() {
+  createCanvas(750, 785);
+
+  init();
 }
 
 function draw() {
@@ -58,13 +62,22 @@ function endGame(won) {
   strokeWeight(5);
   if (won) {
     text('You win!', width / 2, height / 2);
+
+    textSize(30);
+    text('Prepare for the next level', width / 2, height / 2 + 50);
+
+    setTimeout(() => {
+      init();
+    }, 3000);
   } else {
     text('You lose!', width / 2, height / 2);
-  }
-  textSize(30);
-  text('Refresh the page to restart', width / 2, height / 2 + 50);
+    textSize(30);
+    text('Refresh the page to restart', width / 2, height / 2 + 50);
+    noLoop();
 
-  noLoop();
+  }
+
+
 }
 
 function generateField() {

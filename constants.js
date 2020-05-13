@@ -1,4 +1,4 @@
-const TILE_SIZE = 25;
+const TILE_SIZE = 35;
 const DIMENSIONS = 20;
 
 const MOVEMENT_SPEED = 0.15;
