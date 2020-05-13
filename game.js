@@ -45,6 +45,7 @@ function draw() {
 
 function generateField() {
   const field = [];
+  let gId = 0;
 
   for (let i = 0; i < FIELD.length; i++) {
 
@@ -67,6 +68,16 @@ function generateField() {
         case "BISCUIT":
           endScore++;
           field.push(tile);
+          break;
+
+        case "PACMAN":
+          f.push(new Tile(j, i, "OPEN"));
+          break;
+
+        case "GHOST":
+          ghosts.push(new Tile(j, i, type, gId % 2));
+          f.push(new Tile(j, i, "OPEN"));
+          gId++;
           break;
       }
 
