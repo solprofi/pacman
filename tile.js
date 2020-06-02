@@ -1,3 +1,8 @@
+//pacman mouth animation
+let upperMouth = 1.85 // upper mouth radian
+let lowerMouth = 0.2 // lower mouth radian
+mouthSpeed = 0.01
+
 function Tile(x, y, type, id) {
   this.x = x;
   this.y = y;
@@ -94,44 +99,58 @@ Tile.prototype.update = function () {
 Tile.prototype.draw = function () {
   switch (this.type) {
     case 'BARRIER':
-      strokeWeight(5);
+      strokeWeight(3);
       stroke(0);
-      fill('#0000FF');
+      fill('#2234c5');
       rect(this.x * TILE_SIZE, this.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
       break;
 
     case 'BISCUIT':
       ellipseMode(CORNER);
-      noStroke();
+      strokeWeight(2);
+      stroke('#ddd');
       fill(255);
-      ellipse(this.x * TILE_SIZE + TILE_SIZE / 3, this.y * TILE_SIZE + TILE_SIZE / 3, TILE_SIZE / 3);
+      ellipse(this.x * TILE_SIZE + TILE_SIZE * 2 / 5, this.y * TILE_SIZE + TILE_SIZE * 2 / 5, TILE_SIZE / 5);
       break;
 
     case 'CHERRY':
       ellipseMode(CORNER);
-      stroke(255);
+      stroke('#ff7878');
       strokeWeight(2);
       fill('#FF2222');
       ellipse(this.x * TILE_SIZE + TILE_SIZE / 4, this.y * TILE_SIZE + TILE_SIZE / 4, TILE_SIZE / 2);
       break;
 
     case 'GHOST':
-      fill('#FF00EE');
-      stroke(0);
+      ellipseMode(CORNER);
+      stroke('#fff');
       strokeWeight(1);
-      beginShape();
-      vertex(this.x * TILE_SIZE + TILE_SIZE / 2, this.y * TILE_SIZE + TILE_SIZE / 4);
-      vertex(this.x * TILE_SIZE + TILE_SIZE / 4, this.y * TILE_SIZE + (TILE_SIZE / 4 * 3));
-      vertex(this.x * TILE_SIZE + (TILE_SIZE / 4 * 3), this.y * TILE_SIZE + (TILE_SIZE / 4 * 3));
-      endShape(CLOSE);
+      fill('#000');
+      ellipse(this.x * TILE_SIZE + TILE_SIZE / 4, this.y * TILE_SIZE + TILE_SIZE / 4, TILE_SIZE / 2);
+      fill('#f00');
+      strokeWeight(0);
+      ellipse(this.x * TILE_SIZE + TILE_SIZE / 2 + 2, this.y * TILE_SIZE + TILE_SIZE / 3, 3, 3);
+      ellipse(this.x * TILE_SIZE + TILE_SIZE / 2 - 5, this.y * TILE_SIZE + TILE_SIZE / 3, 3, 3);
       break;
 
     case 'PACMAN':
-      ellipseMode(CORNER);
-      stroke('#FFFF00');
-      strokeWeight(5);
-      fill('#FFFF33');
-      ellipse(this.x * TILE_SIZE + TILE_SIZE / 4, this.y * TILE_SIZE + TILE_SIZE / 4, TILE_SIZE / 2);
+      fill(255, 255, 0);
+      ellipse(this.x * TILE_SIZE, this.y * TILE_SIZE, TILE_SIZE);
+
+      fill(30);
+      if (upperMouth >= 2 || upperMouth <= 1.8) {
+        mouthSpeed = mouthSpeed * (-1)
+      }
+      arc(
+        this.x * TILE_SIZE + 13,
+        this.y * TILE_SIZE + 7,
+        TILE_SIZE / 3 * 2,
+        TILE_SIZE / 3 * 2,
+        (upperMouth += mouthSpeed) * PI,
+        (lowerMouth -= mouthSpeed) * PI, PIE
+      );
+
+      ellipse(this.x * TILE_SIZE + TILE_SIZE / 2, this.y * TILE_SIZE + TILE_SIZE / 3, 5, 5);
       break;
   }
 };
